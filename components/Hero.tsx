@@ -252,8 +252,8 @@ export default function Hero({ onOpenCV }: HeroProps) {
         </h1>
 
         {/* Role */}
-        <div className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline">
-          <span className="text-[#bd864b] font-normal italic whitespace-pre">{role}</span>
+        <div className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline overflow-hidden">
+          <span className="text-[#bd864b] font-normal italic" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } as React.CSSProperties}>{role}</span>
           <span className="typed-cursor ml-0.5" />
         </div>
 

@@ -50,31 +50,41 @@ export default function Projects() {
           position: absolute;
           inset: 0;
           transform: translateX(-100%);
-          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 0;
         }
-        .project-row:hover::before { transform: translateX(0); }
         :not(.dark) .project-row::before { background: #f3e7db; }
         .dark .project-row::before { background: #161616; }
-
-        .project-top { transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .project-row:hover .project-top { padding-left: 20px; padding-right: 20px; padding-bottom: 14px; }
-        .project-row:hover .project-title { color: #bd864b; }
-        .project-row:hover .project-arrow { color: #bd864b; transform: translate(3px, -3px); }
 
         .project-expand {
           display: grid;
           grid-template-rows: 0fr;
-          transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .project-row:hover .project-expand { grid-template-rows: 1fr; }
-
         .project-expand-content {
           opacity: 0;
           transform: translateY(-6px);
-          transition: opacity 0.3s ease 0.1s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
         }
-        .project-row:hover .project-expand-content { opacity: 1; transform: translateY(0); }
+
+        @media (hover: hover) {
+          .project-row::before {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .project-row:hover::before { transform: translateX(0); }
+
+          .project-top { transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+          .project-row:hover .project-top { padding-left: 20px; padding-right: 20px; padding-bottom: 14px; }
+          .project-row:hover .project-title { color: #bd864b; }
+          .project-row:hover .project-arrow { color: #bd864b; transform: translate(3px, -3px); }
+
+          .project-expand {
+            transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .project-row:hover .project-expand { grid-template-rows: 1fr; }
+
+          .project-expand-content {
+            transition: opacity 0.3s ease 0.1s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+          }
+          .project-row:hover .project-expand-content { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
 
       <section id="projects" className="border-t border-[#e5e5e5] dark:border-[#1a1a1a] bg-[#f3e7db] dark:bg-[#0f0f0f]">
