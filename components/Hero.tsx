@@ -234,7 +234,7 @@ export default function Hero({ onOpenCV }: HeroProps) {
       `}</style>
 
       {!isTouch && <CursorGlow />}
-      <DotGrid />
+      {!isTouch && <DotGrid />}
 
       <section
         id="about"
@@ -252,7 +252,7 @@ export default function Hero({ onOpenCV }: HeroProps) {
         </h1>
 
         {/* Role */}
-        <div className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline overflow-hidden">
+        <div className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline">
           <span className="text-[#bd864b] font-normal italic" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } as React.CSSProperties}>{role}</span>
           <span className="typed-cursor ml-0.5" />
         </div>
@@ -264,7 +264,7 @@ export default function Hero({ onOpenCV }: HeroProps) {
         </p>
 
         {/* Links */}
-        <div className="hero-links flex items-center gap-6">
+        <div className="hero-links flex flex-wrap items-center gap-x-6 gap-y-3">
           <a
             href="#projects"
             className="text-sm font-mono tracking-wide text-[#0f0f0f] dark:text-[#f0f0f0] border-b border-[#0f0f0f] dark:border-[#f0f0f0] pb-px hover:text-[#bd864b] hover:border-[#bd864b] transition-colors"
