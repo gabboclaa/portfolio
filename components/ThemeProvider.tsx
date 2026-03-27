@@ -9,38 +9,36 @@ const ThemeContext = createContext<{
   toggle: () => void;
 }>({ theme: "light", toggle: () => {} });
 
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  return (localStorage.getItem("theme") as Theme | null) ?? "dark";
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    // Read persisted preference on mount
-    const stored = localStorage.getItem("theme") as Theme | null;
-    const initial = stored ?? "dark";
+    const initial = getInitialTheme();
     setTheme(initial);
-    applyTheme(initial);
-    setMounted(true);
-  }, []);
-
-  const applyTheme = (t: Theme) => {
-    if (t === "dark") {
+    if (initial === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  };
+  }, []);
 
   const toggle = () => {
     setTheme((prev) => {
       const next: Theme = prev === "light" ? "dark" : "light";
-      applyTheme(next);
+      if (next === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
       localStorage.setItem("theme", next);
       return next;
     });
   };
-
-  // Avoid flash: don't render children until we know the theme
-  if (!mounted) return null;
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>

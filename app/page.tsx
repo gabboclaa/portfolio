@@ -1,24 +1,28 @@
-"use client";
+import type { Metadata } from "next";
+import HomeClient from "@/components/HomeClient";
 
-import { useState } from "react";
-import Nav from "@/components/Nav";
-import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
-import Skills from "@/components/Skills";
-import Footer from "@/components/Footer";
-import CVModal from "@/components/CVModal";
+export const metadata: Metadata = {
+  title: "Gabriele Clara Di Gioacchino — Software Developer",
+  description:
+    "Portfolio of Gabriele Clara Di Gioacchino — software developer based in Milan. Building clean, thoughtful products from architecture to interface.",
+  openGraph: {
+    title: "Gabriele Clara Di Gioacchino — Software Developer",
+    description:
+      "Software developer based in Milan. Building clean, thoughtful products from architecture to interface.",
+    url: "https://gabboclaa.vercel.app/",
+    siteName: "Gabriele Clara Di Gioacchino",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gabriele Clara Di Gioacchino — Software Developer",
+    description:
+      "Software developer based in Milan. Building clean, thoughtful products from architecture to interface.",
+    images: ["/og-image.png"],
+  },
+};
 
 export default function Home() {
-  const [cvOpen, setCvOpen] = useState(false);
-
-  return (
-    <main className="min-h-screen bg-[#f3e7db] dark:bg-[#0f0f0f]">
-      <Nav onOpenCV={() => setCvOpen(true)} />
-      <Hero onOpenCV={() => setCvOpen(true)} />
-      <Projects />
-      <Skills />
-      <Footer />
-      <CVModal open={cvOpen} onClose={() => setCvOpen(false)} />
-    </main>
-  );
+  return <HomeClient />;
 }
