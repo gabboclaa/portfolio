@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const skillGroups = [
   {
     category: "Languages",
@@ -22,6 +26,8 @@ const skillGroups = [
 ];
 
 export default function Skills() {
+  const [activeTab, setActiveTab] = useState(0);
+
   return (
     <section id="skills" className="border-t border-[#e5e5e5] dark:border-[#1a1a1a] bg-[#f3e7db] dark:bg-[#0f0f0f]">
       <div className="max-w-5xl mx-auto px-6 md:px-20 py-24">
@@ -32,7 +38,37 @@ export default function Skills() {
           Skills
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+        {/* Mobile: tab layout */}
+        <div className="md:hidden">
+          <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar">
+            {skillGroups.map((group, i) => (
+              <button
+                key={group.category}
+                onClick={() => setActiveTab(i)}
+                className={`shrink-0 font-mono text-xs px-3 py-1 rounded-full border transition-colors ${
+                  activeTab === i
+                    ? "border-[#bd864b] text-[#bd864b]"
+                    : "border-[#e5e5e5] dark:border-[#2a2a2a] text-[#6b6b6b] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0]"
+                }`}
+              >
+                {group.category}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {skillGroups[activeTab].skills.map((skill) => (
+              <span
+                key={skill}
+                className="font-mono text-xs border border-[#e5e5e5] dark:border-[#2a2a2a] px-2 py-1 rounded text-[#6b6b6b] dark:text-[#9a9a9a]"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: grid layout */}
+        <div className="hidden md:grid grid-cols-3 lg:grid-cols-5 gap-8">
           {skillGroups.map(({ category, skills }) => (
             <div key={category}>
               <h3 className="text-xs font-mono text-[#9a9a9a] uppercase tracking-widest mb-5 pb-3 border-b border-[#e5e5e5] dark:border-[#1a1a1a]">

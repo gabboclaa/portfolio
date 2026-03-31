@@ -8,7 +8,7 @@ import Skills from "@/components/Skills";
 import Footer from "@/components/Footer";
 import CVModal from "@/components/CVModal";
 
-export default function HomeClient() {
+export default function HomeClient({ postCount }: { postCount: number }) {
   const [cvOpen, setCvOpen] = useState(false);
 
   return (
@@ -17,7 +17,7 @@ export default function HomeClient() {
       <Hero onOpenCV={() => setCvOpen(true)} />
       <Projects />
       <Skills />
-      <Footer />
+      <Footer postCount={postCount} />
       <CVModal open={cvOpen} onClose={() => setCvOpen(false)} />
     </main>
   );

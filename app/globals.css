@@ -66,3 +66,6 @@ body {
 @media (hover: hover) and (pointer: fine) {
   #about { cursor: none; }
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

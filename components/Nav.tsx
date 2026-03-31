@@ -1,7 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
+
+const MusicPlayer = dynamic(() => import("@/components/MusicPlayer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center gap-[2px] px-3 py-1 rounded-full border border-[#e5e5e5] dark:border-[#2a2a2a] h-[30px] w-[120px]">
+      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
+      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
+      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
+    </div>
+  ),
+});
 
 interface NavProps {
   onOpenCV: () => void;
@@ -46,16 +59,13 @@ const warmUpCV = () => {
           GCDG.dev
         </a>
 
-        <div className="flex items-center gap-4 sm:gap-6">
-          {["About", "Projects", "Skills"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="hidden sm:inline text-sm text-[#6b6b6b] dark:text-[#555] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors"
-            >
-              {item}
-            </a>
-          ))}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link
+            href="/writing"
+            className="font-mono text-xs text-[#6b6b6b] dark:text-[#555] border border-[#e5e5e5] dark:border-[#2a2a2a] px-2 py-1 rounded hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] hover:border-[#0f0f0f] dark:hover:border-[#f0f0f0] transition-colors"
+          >
+            Writing ↗
+          </Link>
 
           {/* Resume button */}
           <button
@@ -63,7 +73,7 @@ const warmUpCV = () => {
             onFocus={warmUpCV}
             onTouchStart={warmUpCV}
             onClick={onOpenCV}
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#0f0f0f] dark:text-[#f0f0f0] border border-[#e5e5e5] dark:border-[#2a2a2a] px-3.5 py-2.5 sm:py-1.5 rounded-full hover:border-[#bd864b] hover:text-[#bd864b] transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#0f0f0f] dark:text-[#f0f0f0] border border-[#e5e5e5] dark:border-[#2a2a2a] px-3.5 py-1.5 rounded-full hover:border-[#bd864b] hover:text-[#bd864b] transition-colors"
           >
             <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
               <path d="M7 1v8M4 6l3 3 3-3M2 11h10" />
@@ -73,10 +83,13 @@ const warmUpCV = () => {
 
           <a
             href="mailto:gabriele.claradigioacchino@outlook.it"
-            className="text-sm bg-[#0f0f0f] dark:bg-[#f0f0f0] text-white dark:text-[#0f0f0f] px-4 py-2.5 sm:py-1.5 rounded-full hover:bg-[#bd864b] dark:hover:bg-[#bd864b] dark:hover:text-white transition-colors"
+            className="hidden sm:block text-sm bg-[#0f0f0f] dark:bg-[#f0f0f0] text-white dark:text-[#0f0f0f] px-4 py-1.5 rounded-full hover:bg-[#bd864b] dark:hover:bg-[#bd864b] dark:hover:text-white transition-colors"
           >
             Contact
           </a>
+
+          {/* Music player */}
+          <MusicPlayer />
 
           {/* Theme toggle */}
           <button

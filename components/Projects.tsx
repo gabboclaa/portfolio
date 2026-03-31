@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const projects = [
   {
     title: "MyShelfie Board Game",
@@ -42,6 +46,8 @@ const projects = [
 ];
 
 export default function Projects() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
     <>
       <style>{`
@@ -109,7 +115,71 @@ export default function Projects() {
             </a>
           </div>
 
-          <div className="border-t border-[#e5e5e5] dark:border-[#1a1a1a]">
+          {/* Mobile: timeline accordion */}
+          <div className="md:hidden relative border-t border-[#e5e5e5] dark:border-[#1a1a1a]">
+            <div className="absolute left-[6px] top-0 bottom-0 w-px bg-[#e5e5e5] dark:bg-[#1a1a1a]" />
+
+            <div className="flex flex-col">
+              {projects.map((project, i) => {
+                const isOpen = openIndex === i;
+                return (
+                  <div
+                    key={project.title}
+                    className="flex items-start gap-4 py-4 border-b border-[#e5e5e5] dark:border-[#1a1a1a] last:border-none cursor-pointer"
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                  >
+                    <div
+                      className={`mt-[5px] w-[13px] h-[13px] rounded-full border flex-shrink-0 relative z-10 transition-colors ${
+                        isOpen
+                          ? "bg-[#0f0f0f] border-[#0f0f0f] dark:bg-[#f0f0f0] dark:border-[#f0f0f0]"
+                          : "bg-[#f3e7db] dark:bg-[#0f0f0f] border-[#e5e5e5] dark:border-[#2a2a2a]"
+                      }`}
+                    />
+
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-sm font-medium text-[#0f0f0f] dark:text-[#f0f0f0]">
+                          {project.title}
+                        </span>
+                        <span className="font-mono text-xs text-[#9a9a9a] flex-shrink-0">
+                          {project.year}
+                          <span
+                            className="inline-block ml-1 transition-transform duration-200"
+                            style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+                          >
+                            ↗
+                          </span>
+                        </span>
+                      </div>
+
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isOpen ? "max-h-52 opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <p className="text-xs text-[#9a9a9a] leading-relaxed mb-2 pt-1">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="font-mono text-[10px] border border-[#e5e5e5] dark:border-[#2a2a2a] px-1.5 py-0.5 rounded text-[#9a9a9a]"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Desktop: hover-expand */}
+          <div className="hidden md:block border-t border-[#e5e5e5] dark:border-[#1a1a1a]">
             {projects.map((project) => (
               <a
                 key={project.title}
@@ -126,24 +196,6 @@ export default function Projects() {
                   <span className="project-arrow text-base text-[#9a9a9a] transition-all duration-300">↗</span>
                 </div>
 
-                {/* Mobile: always visible, no project-expand class (avoids CSS override of sm:hidden) */}
-                <div className="sm:hidden flex flex-col gap-3 pb-6 pl-[60px] pr-5">
-                  <p className="text-[13.5px] text-[#9a9a9a] leading-relaxed">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-[10px] text-[#9a9a9a] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#e8e8e8] dark:border-[#222] px-2.5 py-1 rounded-full whitespace-nowrap"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Desktop: hover-expand (grid-template-rows: 0fr keeps it collapsed on mobile too) */}
                 <div className="project-expand relative z-10 overflow-hidden">
                   <div className="overflow-hidden">
                     <div className="project-expand-content flex flex-col gap-4 pb-6 pl-[72px] pr-5">

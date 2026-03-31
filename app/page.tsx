@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomeClient from "@/components/HomeClient";
+import { getAllPosts } from "@/lib/writing";
 
 export const metadata: Metadata = {
   title: "Gabriele Clara Di Gioacchino — Software Developer",
@@ -24,5 +25,6 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <HomeClient />;
+  const postCount = getAllPosts().length;
+  return <HomeClient postCount={postCount} />;
 }
