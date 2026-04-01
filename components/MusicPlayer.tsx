@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX, SkipForward, SkipBack } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX, SkipForward, SkipBack, Play, Pause, Shuffle } from "lucide-react";
 
 const TRACKS = [
   { id: "zWeYcNfYn3U", start: 180, title: "Prince Of Denmark - GS [FORUM V]" },
@@ -57,7 +57,7 @@ export default function MusicPlayer() {
     window.onYouTubeIframeAPIReady = () => {
       new window.YT.Player("yt-player", {
         videoId: TRACKS[0].id,
-        playerVars: { autoplay: 0, controls: 0, mute: 1 },
+        playerVars: { autoplay: 1, controls: 0, mute: 1, start: TRACKS[0].start },
         events: {
           onReady: (e) => {
             playerRef.current = e.target;
@@ -69,7 +69,7 @@ export default function MusicPlayer() {
             if (e.data === 0) {
               setCurrentTrack((prev) => {
                 const next = (prev + 1) % TRACKS.length;
-                playerRef.current?.loadVideoById(TRACKS[next].id);
+                playerRef.current?.loadVideoById({ videoId: TRACKS[next].id, startSeconds: TRACKS[next].start });
                 return next;
               });
             }
@@ -90,6 +90,10 @@ export default function MusicPlayer() {
       playerRef.current.pauseVideo();
     } else {
       playerRef.current.playVideo();
+      if (isMuted) {
+        playerRef.current.unMute();
+        setIsMuted(false);
+      }
     }
   };
 
@@ -97,6 +101,7 @@ export default function MusicPlayer() {
     if (!playerRef.current) return;
     if (isMuted) {
       playerRef.current.unMute();
+      if (!isPlaying) playerRef.current.playVideo();
       setIsMuted(false);
     } else {
       playerRef.current.mute();
@@ -104,16 +109,18 @@ export default function MusicPlayer() {
     }
   };
 
-  const skipNext = () => {
-    const next = (currentTrack + 1) % TRACKS.length;
-    setCurrentTrack(next);
-    playerRef.current?.loadVideoById(TRACKS[next].id);
-  };
+  const loadTrack = useCallback((index: number) => {
+    setCurrentTrack(index);
+    playerRef.current?.loadVideoById({ videoId: TRACKS[index].id, startSeconds: TRACKS[index].start });
+  }, []);
 
-  const skipPrev = () => {
-    const prev = (currentTrack - 1 + TRACKS.length) % TRACKS.length;
-    setCurrentTrack(prev);
-    playerRef.current?.loadVideoById(TRACKS[prev].id);
+  const skipNext = () => loadTrack((currentTrack + 1) % TRACKS.length);
+  const skipPrev = () => loadTrack((currentTrack - 1 + TRACKS.length) % TRACKS.length);
+
+  const shuffle = () => {
+    let next: number;
+    do { next = Math.floor(Math.random() * TRACKS.length); } while (next === currentTrack && TRACKS.length > 1);
+    loadTrack(next);
   };
 
   return (
@@ -157,12 +164,28 @@ export default function MusicPlayer() {
         <SkipBack size={12} strokeWidth={1.5} />
       </button>
       <button
+        onClick={togglePlay}
+        disabled={!ready}
+        aria-label={isPlaying ? "Pause" : "Play"}
+        className="text-[#6b6b6b] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors disabled:opacity-40"
+      >
+        {isPlaying ? <Pause size={12} strokeWidth={1.5} /> : <Play size={12} strokeWidth={1.5} />}
+      </button>
+      <button
         onClick={skipNext}
         disabled={!ready}
         aria-label="Next track"
         className="text-[#6b6b6b] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors disabled:opacity-40"
       >
         <SkipForward size={12} strokeWidth={1.5} />
+      </button>
+      <button
+        onClick={shuffle}
+        disabled={!ready}
+        aria-label="Shuffle"
+        className="hidden sm:block text-[#6b6b6b] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors disabled:opacity-40"
+      >
+        <Shuffle size={12} strokeWidth={1.5} />
       </button>
       <button
         onClick={toggleMute}

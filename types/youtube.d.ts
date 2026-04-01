@@ -8,6 +8,7 @@ interface Window {
           autoplay?: number;
           controls?: number;
           mute?: number;
+          start?: number;
         };
         events?: {
           onReady?: (event: { target: YTPlayer }) => void;
@@ -30,6 +31,6 @@ interface YTPlayer {
   mute: () => void;
   unMute: () => void;
   isMuted: () => boolean;
-  loadVideoById: (videoId: string) => void;
+  loadVideoById: (options: string | { videoId: string; startSeconds?: number }) => void;
   getPlayerState: () => number;
 }

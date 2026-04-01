@@ -12,8 +12,11 @@ export default function Footer({ postCount }: { postCount: number }) {
           <div className="flex items-center justify-between py-4 border-b border-[#e5e5e5] dark:border-[#1a1a1a]">
             <div className="flex flex-col gap-0.5">
               <span className="font-mono text-xs text-[#9a9a9a]">Also</span>
-              <Link href="/writing" className="text-sm hover:text-[#0066ff] transition-colors">
-                I write things ↗
+              <Link href="/writing" className="flex items-center gap-1 text-sm hover:text-[#0066ff] transition-colors">
+                I write things
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M2 8L8 2M8 2H3M8 2v5" />
+                </svg>
               </Link>
             </div>
             <span className="font-mono text-xs text-[#9a9a9a]">
