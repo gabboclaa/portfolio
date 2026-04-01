@@ -56,13 +56,19 @@ export default function PDFViewerClient({ onClose }: Props) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cv-modal-title"
       className="bg-[#f5f5f5] dark:bg-[#161616] w-full max-w-[700px] max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
       style={{ boxShadow: "0 40px 100px rgba(0,0,0,0.3)" }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#e5e5e5] dark:border-[#1f1f1f] flex-shrink-0 bg-white dark:bg-[#111]">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#9a9a9a]">
+          <span
+            id="cv-modal-title"
+            className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#9a9a9a]"
+          >
             Curriculum Vitae
           </span>
           {numPages > 1 && (
@@ -134,6 +140,7 @@ export default function PDFViewerClient({ onClose }: Props) {
 
           <button
             onClick={onClose}
+            aria-label="Close CV viewer"
             className="w-[30px] h-[30px] flex items-center justify-center rounded-full border border-[#e5e5e5] dark:border-[#2a2a2a] text-[#9a9a9a] hover:border-[#0f0f0f] dark:hover:border-[#f0f0f0] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors"
           >
             <svg
@@ -209,6 +216,7 @@ export default function PDFViewerClient({ onClose }: Props) {
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
+              aria-label={`Go to page ${i + 1}`}
               className={`rounded-full transition-all duration-200 ${
                 currentPage === i + 1
                   ? "w-4 h-1.5 bg-[#0066ff]"

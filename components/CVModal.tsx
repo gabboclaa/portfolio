@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 
 // ⚠️ Key insight: dynamic import with ssr:false ensures react-pdf and pdfjs
@@ -22,15 +22,20 @@ interface CVModalProps {
 }
 
 export default function CVModal({ open, onClose }: CVModalProps) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+
   // Lock body scroll + Escape key
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
+    const previousActiveElement = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
+    overlayRef.current?.focus();
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
+      previousActiveElement?.focus();
     };
   }, [open, onClose]);
 
@@ -45,7 +50,9 @@ export default function CVModal({ open, onClose }: CVModalProps) {
         @keyframes backdropOut { from { opacity:1; } to { opacity:0; } }
       `}</style>
       <div
+        ref={overlayRef}
         onClick={handleBackdrop}
+        tabIndex={-1}
         className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-6"
         style={{
           background: "rgba(0,0,0,0.5)",

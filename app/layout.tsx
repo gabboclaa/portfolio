@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://gabboclaa.vercel.app"),
   title: "Gabriele Clara Di Gioacchino — Software Developer",
   description: "Portfolio of a software developer focused on building clean, thoughtful products.",
 };

@@ -125,52 +125,69 @@ export default function Projects() {
                 return (
                   <div
                     key={project.title}
-                    className="flex items-start gap-4 py-4 border-b border-[#e5e5e5] dark:border-[#1a1a1a] last:border-none cursor-pointer"
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    className="border-b border-[#e5e5e5] dark:border-[#1a1a1a] last:border-none"
                   >
-                    <div
-                      className={`mt-[5px] w-[13px] h-[13px] rounded-full border flex-shrink-0 relative z-10 transition-colors ${
-                        isOpen
-                          ? "bg-[#0f0f0f] border-[#0f0f0f] dark:bg-[#f0f0f0] dark:border-[#f0f0f0]"
-                          : "bg-[#f3e7db] dark:bg-[#0f0f0f] border-[#e5e5e5] dark:border-[#2a2a2a]"
-                      }`}
-                    />
-
-                    <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-sm font-medium text-[#0f0f0f] dark:text-[#f0f0f0]">
-                          {project.title}
-                        </span>
-                        <span className="font-mono text-xs text-[#9a9a9a] flex-shrink-0">
-                          {project.year}
-                          <span
-                            className="inline-block ml-1 transition-transform duration-200"
-                            style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
-                          >
-                            ↗
-                          </span>
-                        </span>
-                      </div>
-
+                    <button
+                      type="button"
+                      className="flex w-full items-start gap-4 py-4 text-left"
+                      aria-expanded={isOpen}
+                      aria-controls={`project-mobile-panel-${i}`}
+                      onClick={() => setOpenIndex(isOpen ? null : i)}
+                    >
                       <div
-                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                          isOpen ? "max-h-52 opacity-100" : "max-h-0 opacity-0"
+                        className={`mt-[5px] h-[13px] w-[13px] rounded-full border flex-shrink-0 relative z-10 transition-colors ${
+                          isOpen
+                            ? "bg-[#0f0f0f] border-[#0f0f0f] dark:bg-[#f0f0f0] dark:border-[#f0f0f0]"
+                            : "bg-[#f3e7db] dark:bg-[#0f0f0f] border-[#e5e5e5] dark:border-[#2a2a2a]"
                         }`}
-                      >
-                        <p className="text-xs text-[#9a9a9a] leading-relaxed mb-2 pt-1">
-                          {project.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {project.tags.map((tag) => (
+                      />
+
+                      <div className="flex flex-1 min-w-0 flex-col gap-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="text-sm font-medium text-[#0f0f0f] dark:text-[#f0f0f0]">
+                            {project.title}
+                          </span>
+                          <span className="font-mono text-xs text-[#9a9a9a] flex-shrink-0">
+                            {project.year}
                             <span
-                              key={tag}
-                              className="font-mono text-[10px] border border-[#e5e5e5] dark:border-[#2a2a2a] px-1.5 py-0.5 rounded text-[#9a9a9a]"
+                              className="inline-block ml-1 transition-transform duration-200"
+                              style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
                             >
-                              {tag}
+                              ↗
                             </span>
-                          ))}
+                          </span>
                         </div>
                       </div>
+                    </button>
+
+                    <div
+                      id={`project-mobile-panel-${i}`}
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isOpen ? "max-h-80 opacity-100 pb-4 pl-[29px]" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <p className="text-xs text-[#9a9a9a] leading-relaxed mb-3 pt-1">
+                        {project.description}
+                      </p>
+                      <div className="mb-3 flex flex-wrap gap-1">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-mono text-[10px] border border-[#e5e5e5] dark:border-[#2a2a2a] px-1.5 py-0.5 rounded text-[#9a9a9a]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <a
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-mono text-[11px] text-[#0f0f0f] dark:text-[#f0f0f0] hover:text-[#bd864b] transition-colors"
+                      >
+                        View project
+                        <span aria-hidden="true">↗</span>
+                      </a>
                     </div>
                   </div>
                 );
