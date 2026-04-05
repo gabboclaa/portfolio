@@ -1,20 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
-
-const MusicPlayer = dynamic(() => import("@/components/MusicPlayer"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center gap-[2px] px-3 py-1 rounded-full border border-[#e5e5e5] dark:border-[#2a2a2a] h-[30px] w-[120px]">
-      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
-      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
-      <span className="w-[2px] h-[4px] rounded-sm bg-[#bd864b]" />
-    </div>
-  ),
-});
 
 interface NavProps {
   onOpenCV: () => void;
@@ -87,10 +75,6 @@ const warmUpCV = () => {
           >
             Contact
           </a>
-
-          {/* Music player */}
-          <MusicPlayer />
-
           {/* Theme toggle */}
           <button
             onClick={toggle}
