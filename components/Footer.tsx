@@ -5,7 +5,7 @@ export default function Footer({ postCount }: { postCount: number }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[#e5e5e5] dark:border-[#1a1a1a] bg-[#f3e7db] dark:bg-[#0a0a0a]">
+    <footer className="border-t border-[#e5e5e5] dark:border-[#1a1a1a] bg-[#f3e7db] dark:bg-[#0f0f0f]">
       <div className="max-w-5xl mx-auto px-6 md:px-20 py-10 flex flex-col gap-0">
 
         {postCount > 0 && (
