@@ -394,7 +394,7 @@ export default function Projects() {
         className="border-t border-[#e5e5e5] bg-[#f3e7db] dark:border-[#1a1a1a] dark:bg-[#0f0f0f]"
       >
         <div className="px-6 py-24 md:px-20">
-          <div className="mb-12 flex items-end justify-between gap-6">
+          <div className="mb-12 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
             <div>
               <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.32em] text-[#8a8178] dark:text-[#6f6f6f]">
                 Selected Work
@@ -432,7 +432,7 @@ export default function Projects() {
                     onClick={() => setOpenIndex(isOpen ? -1 : index)}
                     className="group w-full text-left"
                   >
-                    <div className="grid gap-6 px-0 py-6 md:grid-cols-[72px_minmax(0,1fr)_196px_28px] md:items-center">
+                    <div className="grid gap-x-4 gap-y-4 px-0 py-5 md:grid-cols-[72px_minmax(0,1fr)_196px_28px] md:gap-6 md:py-6 md:items-center">
                       <div className="flex items-center justify-between md:block">
                         <span className="font-mono text-xs text-[#8a8178] dark:text-[#7f7f7f]">{project.year}</span>
                         {project.latest ? (
@@ -442,29 +442,40 @@ export default function Projects() {
                         ) : null}
                       </div>
 
-                      <div className="min-w-0">
-                        <div className="mb-2 flex flex-wrap items-center gap-3">
-                          <h3 className="text-lg font-medium tracking-tight text-[#0f0f0f] dark:text-[#f0f0f0]">
-                            {project.title}
-                          </h3>
-                          {project.latest ? (
-                            <span className="hidden rounded-full border border-[#6f4ef6]/35 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[#b8a8ff] md:inline-flex">
-                              Latest
-                            </span>
-                          ) : null}
+                      <div className="flex items-start justify-between gap-4 md:contents">
+                        <div className="min-w-0">
+                          <div className="mb-2 flex flex-wrap items-center gap-3">
+                            <h3 className="text-lg font-medium tracking-tight text-[#0f0f0f] dark:text-[#f0f0f0]">
+                              {project.title}
+                            </h3>
+                            {project.latest ? (
+                              <span className="hidden rounded-full border border-[#6f4ef6]/35 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[#b8a8ff] md:inline-flex">
+                                Latest
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="max-w-2xl text-sm leading-relaxed text-[#6b6b6b] dark:text-[#8a8a8a]">
+                            {project.summary}
+                          </p>
                         </div>
-                        <p className="max-w-2xl text-sm leading-relaxed text-[#6b6b6b] dark:text-[#8a8a8a]">
-                          {project.summary}
-                        </p>
+
+                        <div className="flex shrink-0 items-center justify-end md:hidden">
+                          <span
+                            className="font-mono text-sm text-[#8a8178] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#0f0f0f] dark:text-[#6f6f6f] dark:group-hover:text-[#f0f0f0]"
+                            aria-hidden="true"
+                          >
+                            {isOpen ? "−" : "+"}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#ddd0c3] bg-[#efe3d7] dark:border-[#232323] dark:bg-[#111111]">
+                      <div className="relative hidden aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#ddd0c3] bg-[#efe3d7] dark:border-[#232323] dark:bg-[#111111] md:block md:row-auto">
                         <div className="project-thumb h-full w-full">
                           <ProjectThumbnail project={project} />
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end">
+                      <div className="hidden items-center justify-end md:flex">
                         <span
                           className="font-mono text-sm text-[#8a8178] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#0f0f0f] dark:text-[#6f6f6f] dark:group-hover:text-[#f0f0f0]"
                           aria-hidden="true"
@@ -477,10 +488,10 @@ export default function Projects() {
 
                   <div id={panelId} className="project-panel" aria-hidden={!isOpen}>
                     <div className="project-panel-inner">
-                      <div className="project-panel-content border-t border-[#e5e5e5] pb-6 pt-6 dark:border-[#1a1a1a]">
+                      <div className="project-panel-content border-t border-[#e5e5e5] pb-5 pt-5 dark:border-[#1a1a1a] md:pb-6 md:pt-6">
                         <div className="grid gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
                           <div className="space-y-5">
-                            <div className="overflow-hidden rounded-3xl border border-[#ddd0c3] bg-[#efe3d7] dark:border-[#232323] dark:bg-[#111111]">
+                            <div className="hidden overflow-hidden rounded-3xl border border-[#ddd0c3] bg-[#efe3d7] dark:border-[#232323] dark:bg-[#111111] md:block">
                               <div className="relative aspect-[16/10] w-full">
                                 <ProjectThumbnail project={project} />
                               </div>
@@ -504,11 +515,11 @@ export default function Projects() {
                                 {project.description}
                               </p>
 
-                              <dl className="mt-6 grid gap-3 sm:grid-cols-3">
+                              <dl className="mt-5 grid gap-2.5 sm:grid-cols-3 md:mt-6 md:gap-3">
                                 {project.stats.map((stat) => (
                                   <div
                                     key={`${project.key}-${stat.label}`}
-                                    className="border border-[#ddd0c3] bg-[#efe3d7] px-4 py-3 dark:border-[#202020] dark:bg-[#121212]"
+                                    className="border border-[#ddd0c3] bg-[#efe3d7] px-3 py-3 dark:border-[#202020] dark:bg-[#121212] md:px-4"
                                   >
                                     <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8a8178] dark:text-[#6f6f6f]">
                                       {stat.label}
@@ -519,14 +530,14 @@ export default function Projects() {
                               </dl>
                             </div>
 
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-2.5 md:gap-3">
                               {project.links.map((link) => (
                                 <a
                                   key={`${project.key}-${link.label}`}
                                   href={link.href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center border border-[#d8cabd] px-3 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#3d342d] transition-colors hover:border-[#0f0f0f] hover:text-[#0f0f0f] dark:border-[#2a2a2a] dark:text-[#d9d9d9] dark:hover:border-[#f0f0f0] dark:hover:text-[#f0f0f0]"
+                                  className="inline-flex items-center border border-[#d8cabd] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[#3d342d] transition-colors hover:border-[#0f0f0f] hover:text-[#0f0f0f] dark:border-[#2a2a2a] dark:text-[#d9d9d9] dark:hover:border-[#f0f0f0] dark:hover:text-[#f0f0f0] md:text-[11px]"
                                 >
                                   {link.label} ↗
                                 </a>
