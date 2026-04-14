@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
-import Skills from "@/components/Skills";
 import Footer from "@/components/Footer";
 import CVModal from "@/components/CVModal";
 import { useTheme } from "@/components/ThemeProvider";
@@ -41,7 +40,6 @@ export default function HomeClient({ postCount }: { postCount: number }) {
       <Nav onOpenCV={() => setCvOpen(true)} />
       <Hero onOpenCV={() => setCvOpen(true)} />
       <Projects />
-      <Skills />
       <Footer postCount={postCount} />
       <div className="fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
         <MusicPlayer />

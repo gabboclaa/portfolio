@@ -11,58 +11,104 @@ function useIsTouchDevice() {
   return isTouch;
 }
 
-// ── Scramble hook ──
-function useScramble(finalText: string, startDelay = 500, duration = 1400) {
-  const [display, setDisplay] = useState("\u00A0");
-  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+// ── Surname scramble hook ──
+function useSurnameScramble(finalText: string) {
+  const placeholder = finalText.replace(/[^\s]/g, "\u00A0");
+  const [display, setDisplay] = useState(placeholder);
+  const [roleReady, setRoleReady] = useState(false);
 
   useEffect(() => {
-    let rafId: number;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setDisplay(finalText);
+      setRoleReady(true);
+      return;
+    }
+
+    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const START_DELAY = 200;
+    const SCRAMBLE_DURATION = 900;
+    const ROLE_DELAY = 300;
+    const chars = finalText.split("");
+    const revealIndexes = chars
+      .map((char, index) => (char === " " ? -1 : index))
+      .filter((index) => index >= 0);
+    const scrambleFrames = chars.map((char) =>
+      char === " " ? 0 : 6 + Math.floor(Math.random() * 5)
+    );
+    const frameDuration = 16;
+    const perCharDuration = SCRAMBLE_DURATION / revealIndexes.length;
+    let rafId = 0;
+    let roleTimer: ReturnType<typeof setTimeout> | undefined;
     let startTime: number | null = null;
-    let lastTickTime = 0;
-    const TICK_INTERVAL = 45;
 
-    const startTimeout = setTimeout(() => {
-      const len = finalText.length;
+    const getRandomChar = () => CHARS[Math.floor(Math.random() * CHARS.length)];
 
-      const animate = (now: number) => {
-        if (!startTime) startTime = now;
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+    const animate = (now: number) => {
+      if (startTime === null) {
+        startTime = now;
+      }
 
-        if (progress === 1) { setDisplay(finalText); return; }
+      const elapsed = now - startTime;
+      if (elapsed < START_DELAY) {
+        setDisplay(placeholder);
+        rafId = requestAnimationFrame(animate);
+        return;
+      }
 
-        const eased = 1 - Math.pow(1 - progress, 2);
-        const revealed = Math.floor(eased * len);
-
-        if (now - lastTickTime > TICK_INTERVAL) {
-          lastTickTime = now;
-          let output = "";
-          for (let i = 0; i < len; i++) {
-            if (finalText[i] === " ") { output += " "; continue; }
-            output += i < revealed
-              ? finalText[i]
-              : CHARS[Math.floor(Math.random() * CHARS.length)];
-          }
-          setDisplay(output);
+      const scrambleElapsed = Math.min(elapsed - START_DELAY, SCRAMBLE_DURATION);
+      const nextChars = chars.map((char, index) => {
+        if (char === " ") {
+          return " ";
         }
 
-        rafId = requestAnimationFrame(animate);
-      };
+        const revealPosition = revealIndexes.indexOf(index);
+        const charStart = perCharDuration * revealPosition;
+        const charFrames = scrambleFrames[index];
+        const charDuration = Math.max(charFrames * frameDuration, perCharDuration);
+        const charEnd = charStart + charDuration;
+
+        if (scrambleElapsed >= charEnd) {
+          return char;
+        }
+
+        if (scrambleElapsed < charStart) {
+          return getRandomChar();
+        }
+
+        return getRandomChar();
+      });
+
+      setDisplay(nextChars.join(""));
+
+      if (scrambleElapsed >= SCRAMBLE_DURATION) {
+        setDisplay(finalText);
+        roleTimer = setTimeout(() => setRoleReady(true), ROLE_DELAY);
+        return;
+      }
 
       rafId = requestAnimationFrame(animate);
-    }, startDelay);
+    };
 
-    return () => { clearTimeout(startTimeout); if (rafId) cancelAnimationFrame(rafId); };
-  }, [finalText, startDelay, duration]);
+    rafId = requestAnimationFrame(animate);
 
-  return display;
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (roleTimer) clearTimeout(roleTimer);
+    };
+  }, [finalText, placeholder]);
+
+  return { display, roleReady };
 }
 
 // ── Typed rotating words hook ──
 function useTyped(words: string[], startDelay = 1800) {
-  const [text, setText] = useState("\u00A0");
-  const state = useRef({ wordIndex: 0, charIndex: 0, deleting: false });
+  const [text, setText] = useState(words[0] || "\u00A0");
+  const state = useRef({
+    wordIndex: 0,
+    charIndex: words[0]?.length ?? 0,
+    deleting: true,
+  });
 
   useEffect(() => {
     const TYPE_SPEED = 85, DELETE_SPEED = 40, PAUSE = 2000;
@@ -216,8 +262,8 @@ interface HeroProps {
 }
 
 export default function Hero({ onOpenCV }: HeroProps) {
-  const name = useScramble("Gabriele Clara Di Gioacchino", 500, 1400);
-  const role = useTyped(["developer.", "builder.", "engineer.", "creator."], 1800);
+  const { display: surname, roleReady } = useSurnameScramble("Clara Di Gioacchino");
+  const role = useTyped(["developer", "builder", "engineer", "creator"], 1800);
   const isTouch = useIsTouchDevice();
 
   return (
@@ -236,21 +282,42 @@ export default function Hero({ onOpenCV }: HeroProps) {
         </div>
 
         {/* Name */}
-        <h1 className="text-5xl sm:text-6xl md:text-[72px] font-medium tracking-tight leading-none mb-2 text-[#0f0f0f] dark:text-[#f0f0f0]">
-          {name || "\u00A0"}
+        <h1 className="text-[2.5rem] sm:text-6xl md:text-[72px] font-medium tracking-tight leading-none mb-2 text-[#0f0f0f] dark:text-[#f0f0f0]">
+          <span id="firstname" className="block">Gabriele</span>
+          <span id="surname" className="block whitespace-nowrap">{surname || "\u00A0"}</span>
         </h1>
 
         {/* Role */}
-        <div className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline">
-          <span className="text-[#bd864b] font-normal italic" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } as React.CSSProperties}>{role}</span>
+        <div
+          className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline transition-all duration-[400ms] ease-out"
+          style={{
+            opacity: roleReady ? 1 : 0,
+            transform: roleReady ? "translateY(0)" : "translateY(6px)",
+          }}
+        >
+          <span
+            id="switching-word"
+            className="text-[#bd864b] font-normal italic"
+            style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } as React.CSSProperties}
+          >
+            {role}
+          </span>
+          <span className="hero-period text-[#bd864b] font-normal italic">.</span>
           <span className="typed-cursor ml-0.5" />
         </div>
 
         {/* Description */}
-        <p className="hero-desc text-[15px] text-[#9a9a9a] dark:text-[#555] leading-relaxed max-w-sm mb-12">
-          I craft clean, thoughtful software — from architecture to interface.
-          Based in Milan, open to remote.
-        </p>
+        <div className="hero-desc mb-12">
+          <p className="mt-3 mb-5 text-[28px] sm:text-[30px] md:text-[32px] font-medium text-[#0f0f0f] dark:text-[#f0ede8] leading-tight">
+            I ask why before how.
+          </p>
+          <p className="mt-2 max-w-[27rem] text-[15px] text-[#9a9a9a] dark:text-[#6b6b6b] leading-relaxed">
+            A software engineer driven by curiosity — I don't know where technology leads, and that's exactly what keeps me building.
+          </p>
+          <p className="mt-4 font-mono text-[11px] tracking-wide text-[#9a9a9a] dark:text-[#3a3a3a] opacity-70">
+            Python · C++ · React · Next.js · MongoDB · TensorFlow · Kafka · Spark
+          </p>
+        </div>
 
         {/* Links */}
         <div className="hero-links flex flex-wrap items-center gap-x-6 gap-y-3">

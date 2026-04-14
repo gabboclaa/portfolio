@@ -10,25 +10,28 @@ export default function Footer({ postCount }: { postCount: number }) {
 
         {postCount > 0 && (
           <div className="flex items-center justify-between py-4 border-b border-[#e5e5e5] dark:border-[#1a1a1a]">
-            <div className="flex flex-col gap-0.5">
-              <span className="font-mono text-xs text-[#9a9a9a]">Also</span>
-              <Link href="/writing" className="flex items-center gap-1 text-sm hover:text-[#0066ff] transition-colors">
-                I write things
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M2 8L8 2M8 2H3M8 2v5" />
-                </svg>
-              </Link>
-            </div>
+            <Link href="/writing" className="flex items-center gap-1 text-sm hover:text-[#0066ff] transition-colors">
+              I write things
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M2 8L8 2M8 2H3M8 2v5" />
+              </svg>
+            </Link>
             <span className="font-mono text-xs text-[#9a9a9a]">
               {postCount === 1 ? "1 post" : `${postCount} posts`}
             </span>
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
-          <span className="font-mono text-xs text-[#9a9a9a]">
-            © {year} Gabriele Clara Di Gioacchino
-          </span>
+
+<div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-xs text-[#9a9a9a]">
+              © {year} Gabriele Clara Di Gioacchino
+            </span>
+            <span className="font-mono text-xs text-[#b0b0b0] dark:text-[#3a3a3a]">
+              Based in Milan · Open to opportunities
+            </span>
+          </div>
           <div className="flex items-center gap-5">
             <a
               href="https://github.com/gabboclaa"

@@ -12,18 +12,16 @@ export default function Nav({ onOpenCV }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggle } = useTheme();
 
-  // Preload del chunk JS del viewer (Next dynamic import)
-const preloadPDFViewer = () => import("./PDFViewerClient");
+  const preloadPDFViewer = () => import("./PDFViewerClient");
 
-// Prefetch del PDF per scaldare la cache (se /cv.pdf è un file pubblico)
-const prefetchPDF = () => {
-  fetch("/cv.pdf", { cache: "force-cache" }).catch(() => {});
-};
+  const prefetchPDF = () => {
+    fetch("/cv.pdf", { cache: "force-cache" }).catch(() => {});
+  };
 
-const warmUpCV = () => {
-  preloadPDFViewer();
-  prefetchPDF();
-};
+  const warmUpCV = () => {
+    preloadPDFViewer();
+    prefetchPDF();
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -39,18 +37,22 @@ const warmUpCV = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a
-          href="#"
-          className="font-mono text-sm font-medium text-[#0f0f0f] dark:text-[#f0f0f0] tracking-tight hover:text-[#bd864b] transition-colors"
-        >
-          GCDG.dev
-        </a>
+      <div className="w-full px-6 md:px-20 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <a
+            href="#"
+            className="font-mono text-base font-medium tracking-[-0.03em] text-[#0f0f0f] dark:text-[#f0f0f0] transition-colors"
+          >
+            <span className="font-light text-[#bd864b]">&lt;</span>
+            GCDG
+            <span className="text-[#bd864b]">.dev</span>
+            <span className="font-light text-[#bd864b]">&gt;</span>
+          </a>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/writing"
-            className="font-mono text-xs text-[#6b6b6b] dark:text-[#555] border border-[#e5e5e5] dark:border-[#2a2a2a] px-2 py-1 rounded hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] hover:border-[#0f0f0f] dark:hover:border-[#f0f0f0] transition-colors"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#0f0f0f] dark:text-[#f0f0f0] border border-[#e5e5e5] dark:border-[#2a2a2a] px-3.5 py-1.5 rounded-full hover:border-[#bd864b] hover:text-[#bd864b] transition-colors"
           >
             Writing ↗
           </Link>
@@ -68,6 +70,10 @@ const warmUpCV = () => {
             </svg>
             Resume
           </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 sm:gap-4">
 
           <a
             href="mailto:gabriele.claradigioacchino@outlook.it"
