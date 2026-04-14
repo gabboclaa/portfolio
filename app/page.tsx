@@ -10,9 +10,16 @@ export const metadata: Metadata = {
     title: "Gabriele Clara Di Gioacchino — Software Developer",
     description:
       "Software developer based in Milan. Building clean, thoughtful products from architecture to interface.",
-    url: "https://gabboclaa.vercel.app/",
+    url: "https://gabboclaa.com",
     siteName: "Gabriele Clara Di Gioacchino",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Gabriele Clara Di Gioacchino portfolio",
+      },
+    ],
     type: "website",
   },
   twitter: {
