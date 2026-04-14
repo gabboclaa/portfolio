@@ -3,9 +3,14 @@ import HomeClient from "@/components/HomeClient";
 import { getAllPosts } from "@/lib/writing";
 
 export const metadata: Metadata = {
-  title: "Gabriele Clara Di Gioacchino — Software Developer",
+  title: {
+    absolute: "Gabriele Clara Di Gioacchino — Software Developer",
+  },
   description:
     "Portfolio of Gabriele Clara Di Gioacchino — software developer based in Milan. Building clean, thoughtful products from architecture to interface.",
+  alternates: {
+    canonical: "https://gabboclaa.com",
+  },
   openGraph: {
     title: "Gabriele Clara Di Gioacchino — Software Developer",
     description:

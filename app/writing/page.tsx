@@ -1,8 +1,32 @@
+import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/writing";
 import PostCard from "@/components/writing/PostCard";
 import Link from "next/link";
 
-export const metadata = { title: "Writing — Gabriele" };
+export const metadata: Metadata = {
+  title: "Writing",
+  description:
+    "Essays and notes by Gabriele Clara Di Gioacchino on software engineering, technology, and building things.",
+  alternates: {
+    canonical: "https://gabboclaa.com/writing",
+  },
+  openGraph: {
+    title: "Writing — Gabriele Clara Di Gioacchino",
+    description:
+      "Essays and notes on software engineering, technology, and building things.",
+    url: "https://gabboclaa.com/writing",
+    siteName: "Gabriele Clara Di Gioacchino",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Gabriele Clara Di Gioacchino — Writing" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Writing — Gabriele Clara Di Gioacchino",
+    description:
+      "Essays and notes on software engineering, technology, and building things.",
+    images: ["/og-image.png"],
+  },
+};
 
 export default function WritingPage() {
   const posts = getAllPosts();

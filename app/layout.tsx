@@ -4,8 +4,22 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gabboclaa.com"),
-  title: "Gabriele Clara Di Gioacchino — Software Developer",
+  title: {
+    default: "Gabriele Clara Di Gioacchino — Software Developer",
+    template: "%s — Gabriele Clara Di Gioacchino",
+  },
   description: "Portfolio of a software developer focused on building clean, thoughtful products.",
+  authors: [{ name: "Gabriele Clara Di Gioacchino", url: "https://gabboclaa.com" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -27,6 +41,7 @@ export const metadata: Metadata = {
       },
     ],
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
@@ -34,6 +49,28 @@ export const metadata: Metadata = {
     description: "Portfolio of a software developer focused on building clean, thoughtful products.",
     images: ["/og-image.png"],
   },
+};
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Gabriele Clara Di Gioacchino",
+  url: "https://gabboclaa.com",
+  sameAs: [
+    "https://github.com/gabboclaa",
+    "https://www.linkedin.com/in/gabriele-clara-di-gioacchino",
+  ],
+  jobTitle: "Software Developer",
+  description:
+    "Software developer based in Milan, building clean and thoughtful products from architecture to interface.",
+  knowsAbout: ["Python", "C++", "React", "Next.js", "MongoDB", "TensorFlow", "Kafka", "Spark"],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Gabriele Clara Di Gioacchino",
+  url: "https://gabboclaa.com",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -44,6 +81,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: `(function(){var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}})()`,
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
       <body>

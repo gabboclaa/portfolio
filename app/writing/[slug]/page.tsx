@@ -13,7 +13,28 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const { meta } = getPostContent(slug);
-  return { title: `${meta.title} — Gabriele` };
+  const url = `https://gabboclaa.com/writing/${slug}`;
+  return {
+    title: meta.title,
+    description: meta.description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: meta.title,
+      description: meta.description,
+      url,
+      siteName: "Gabriele Clara Di Gioacchino",
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: meta.title }],
+      type: "article",
+      publishedTime: meta.date,
+      authors: ["Gabriele Clara Di Gioacchino"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: ["/og-image.png"],
+    },
+  };
 }
 
 export default async function PostPage({
@@ -23,8 +44,25 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const { meta, content } = getPostContent(slug);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: meta.title,
+    description: meta.description,
+    author: {
+      "@type": "Person",
+      name: "Gabriele Clara Di Gioacchino",
+      url: "https://gabboclaa.com",
+    },
+    datePublished: meta.date,
+    url: `https://gabboclaa.com/writing/${slug}`,
+  };
   return (
     <main className="max-w-2xl mx-auto px-6 py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <div className="mb-12">
         <Link
           href="/writing"
