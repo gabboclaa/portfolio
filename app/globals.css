@@ -6,11 +6,10 @@
 
 html { scroll-behavior: smooth; }
 
-/* Theme transitions — scoped to avoid triggering on canvas/svg/img */
-html, body, nav, main, section, article, header, footer,
-div, span, p, h1, h2, h3, h4, h5, h6, li, ul, ol,
-a, button, input, select, textarea, label {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease;
+/* Theme transitions — applied only during toggle via ThemeProvider, never during scroll */
+.theme-transitioning,
+.theme-transitioning * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease !important;
 }
 
 body {

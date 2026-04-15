@@ -22,7 +22,7 @@ export default function Nav({ onOpenCV }: NavProps) {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#f3e7db]/90 dark:bg-[#0f0f0f]/90 backdrop-blur-md border-b border-[#e5e5e5] dark:border-[#1f1f1f]"
+          ? "bg-[#f3e7db] dark:bg-[#0f0f0f] border-b border-[#e5e5e5] dark:border-[#1f1f1f]"
           : "bg-transparent"
       }`}
     >

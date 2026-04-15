@@ -33,6 +33,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggle = () => {
+    // Gate transitions to the toggle only — keeps scroll completely jank-free
+    document.documentElement.classList.add("theme-transitioning");
     setTheme((prev) => {
       const next: Theme = prev === "light" ? "dark" : "light";
       if (next === "dark") {
@@ -43,6 +45,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("theme", next);
       return next;
     });
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 350);
   };
 
   return (
