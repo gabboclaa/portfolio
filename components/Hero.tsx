@@ -104,6 +104,8 @@ function useSurnameScramble(finalText: string) {
 // ── Typed rotating words hook ──
 function useTyped(words: string[], startDelay = 1800) {
   const [text, setText] = useState(words[0] || "\u00A0");
+  // Use a ref for words so the effect doesn't depend on the array reference
+  const wordsRef = useRef(words);
   const state = useRef({
     wordIndex: 0,
     charIndex: words[0]?.length ?? 0,
@@ -116,7 +118,7 @@ function useTyped(words: string[], startDelay = 1800) {
 
     const tick = () => {
       const { wordIndex, charIndex, deleting } = state.current;
-      const current = words[wordIndex];
+      const current = wordsRef.current[wordIndex];
 
       if (!deleting) {
         const next = charIndex + 1;
@@ -133,7 +135,7 @@ function useTyped(words: string[], startDelay = 1800) {
         state.current.charIndex = next;
         if (next === 0) {
           state.current.deleting = false;
-          state.current.wordIndex = (wordIndex + 1) % words.length;
+          state.current.wordIndex = (wordIndex + 1) % wordsRef.current.length;
         }
       }
       timer = setTimeout(tick, deleting ? DELETE_SPEED : TYPE_SPEED);
@@ -141,7 +143,7 @@ function useTyped(words: string[], startDelay = 1800) {
 
     const startTimer = setTimeout(tick, startDelay);
     return () => { clearTimeout(startTimer); clearTimeout(timer); };
-  }, []);
+  }, [startDelay]);
 
   return text;
 }
@@ -157,6 +159,7 @@ function DotGrid() {
     const ctx = canvas.getContext("2d")!;
     const SPACING = 36;
     let raf: number;
+    let paused = false;
 
     const resize = () => {
       canvas.width  = window.innerWidth;
@@ -168,7 +171,14 @@ function DotGrid() {
     const onMove = (e: MouseEvent) => { mouse.current = { x: e.clientX, y: e.clientY }; };
     window.addEventListener("mousemove", onMove);
 
+    const onVisibility = () => {
+      paused = document.hidden;
+      if (!paused) raf = requestAnimationFrame(draw);
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     const draw = () => {
+      if (paused) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const isDark = document.documentElement.classList.contains("dark");
       const cols = Math.ceil(canvas.width  / SPACING) + 1;
@@ -202,6 +212,7 @@ function DotGrid() {
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("visibilitychange", onVisibility);
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -209,6 +220,7 @@ function DotGrid() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 z-0 pointer-events-none"
       style={{ opacity: 0, animation: "fadeInCanvas 1.2s ease 0.3s forwards" }}
     />
@@ -289,7 +301,7 @@ export default function Hero({ onOpenCV }: HeroProps) {
 
         {/* Role */}
         <div
-          className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline transition-all duration-[400ms] ease-out"
+          className="text-5xl sm:text-6xl md:text-[72px] font-light tracking-tight leading-none mb-12 flex items-baseline min-h-[1.2em] transition-all duration-[400ms] ease-out"
           style={{
             opacity: roleReady ? 1 : 0,
             transform: roleReady ? "translateY(0)" : "translateY(6px)",

@@ -9,7 +9,7 @@ export default function PostCard({ post }: { post: Post }) {
         {post.title}
       </span>
       <span className="text-sm text-[#6b6b6b]">{post.description}</span>
-      {post.tags.length > 0 && (
+      {(post.tags?.length ?? 0) > 0 && (
         <div className="flex gap-2 mt-1">
           {post.tags.map((tag) => (
             <span

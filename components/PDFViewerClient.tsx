@@ -56,9 +56,6 @@ export default function PDFViewerClient({ onClose }: Props) {
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="cv-modal-title"
       className="bg-[#f5f5f5] dark:bg-[#161616] w-full max-w-[700px] max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
       style={{ boxShadow: "0 40px 100px rgba(0,0,0,0.3)" }}
     >

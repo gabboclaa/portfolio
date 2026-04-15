@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import Image from "next/image";
 
 type TagTone = "ml" | "vision" | "systems" | "java" | "nlp";
 
@@ -329,12 +330,13 @@ function ProjectThumbnail({
 
   if (src) {
     return (
-      <img
+      <Image
         src={src}
-        alt=""
-        className="h-full w-full object-cover"
-        loading="eager"
-        decoding="async"
+        alt={project.title}
+        fill
+        sizes="(max-width: 768px) 0px, 500px"
+        className="object-cover"
+        loading="lazy"
       />
     );
   }
@@ -346,50 +348,7 @@ export default function Projects() {
   const [openIndex, setOpenIndex] = useState<number>(projects.findIndex((project) => project.latest));
 
   return (
-    <>
-      <style>{`
-        .project-card {
-          transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-
-        .project-thumb {
-          transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-        }
-
-        .project-card:hover .project-thumb,
-        .project-card[data-open="true"] .project-thumb,
-        .project-card:focus-within .project-thumb {
-          transform: scale(1.02);
-        }
-
-        .project-panel {
-          display: grid;
-          grid-template-rows: 0fr;
-          transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .project-card[data-open="true"] .project-panel {
-          grid-template-rows: 1fr;
-        }
-
-        .project-panel-inner {
-          overflow: hidden;
-        }
-
-        .project-panel-content {
-          opacity: 0;
-          transform: translateY(-8px);
-          transition: opacity 0.2s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .project-card[data-open="true"] .project-panel-content {
-          opacity: 1;
-          transform: translateY(0);
-          transition-delay: 0.08s;
-        }
-      `}</style>
-
-      <section
+    <section
         id="projects"
         className="border-t border-[#e5e5e5] bg-[#f3e7db] dark:border-[#1a1a1a] dark:bg-[#0f0f0f]"
       >
@@ -470,7 +429,7 @@ export default function Projects() {
                       </div>
 
                       <div className="relative hidden aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#ddd0c3] bg-[#efe3d7] dark:border-[#232323] dark:bg-[#111111] md:block md:row-auto">
-                        <div className="project-thumb h-full w-full">
+                        <div className="project-thumb relative h-full w-full">
                           <ProjectThumbnail project={project} />
                         </div>
                       </div>
@@ -563,6 +522,5 @@ export default function Projects() {
           </a>
         </div>
       </section>
-    </>
   );
 }

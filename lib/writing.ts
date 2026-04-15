@@ -13,23 +13,48 @@ export type Post = {
 const WRITING_DIR = path.join(process.cwd(), "content/writing");
 
 export function getAllPosts(): Post[] {
-  const files = fs.readdirSync(WRITING_DIR);
+  let files: string[];
+  try {
+    files = fs.readdirSync(WRITING_DIR);
+  } catch {
+    return [];
+  }
   return files
     .filter((f) => f.endsWith(".mdx"))
     .map((f) => {
       const slug = f.replace(".mdx", "");
       const raw = fs.readFileSync(path.join(WRITING_DIR, f), "utf8");
       const { data } = matter(raw);
-      return { slug, ...data } as Post;
+      return {
+        slug,
+        title: data.title ?? "",
+        date: data.date ?? "",
+        description: data.description ?? "",
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        ...data,
+      } as Post;
     })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => {
+      const ta = new Date(a.date).getTime();
+      const tb = new Date(b.date).getTime();
+      if (isNaN(ta) || isNaN(tb)) return 0;
+      return tb - ta;
+    });
 }
 
 export function getPostContent(slug: string): { meta: Post; content: string } {
-  const raw = fs.readFileSync(
-    path.join(WRITING_DIR, `${slug}.mdx`),
-    "utf8"
-  );
+  const filePath = path.join(WRITING_DIR, `${slug}.mdx`);
+  const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
-  return { meta: data as Post, content };
+  return {
+    meta: {
+      slug,
+      title: data.title ?? "",
+      date: data.date ?? "",
+      description: data.description ?? "",
+      tags: Array.isArray(data.tags) ? data.tags : [],
+      ...data,
+    } as Post,
+    content,
+  };
 }

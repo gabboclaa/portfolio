@@ -37,6 +37,7 @@ const TRACKS = [
 export default function MusicPlayer() {
   const { theme } = useTheme();
   const playerRef = useRef<YTPlayer | null>(null);
+  const initializedRef = useRef(false);
   const minimizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -46,9 +47,8 @@ export default function MusicPlayer() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    if (document.getElementById("yt-player")) {
-      // Player div already exists
-    }
+    if (initializedRef.current) return;
+    initializedRef.current = true;
 
     const existing = document.querySelector(
       'script[src="https://www.youtube.com/iframe_api"]'
@@ -83,7 +83,7 @@ export default function MusicPlayer() {
       });
     };
 
-    // If API already loaded
+    // If API already loaded, init immediately
     if (window.YT?.Player) {
       window.onYouTubeIframeAPIReady();
     }
@@ -92,6 +92,8 @@ export default function MusicPlayer() {
       if (minimizeTimeoutRef.current) {
         clearTimeout(minimizeTimeoutRef.current);
       }
+      playerRef.current?.destroy();
+      playerRef.current = null;
     };
   }, []);
 
@@ -176,6 +178,7 @@ export default function MusicPlayer() {
           <button
             onClick={() => setMobileOpen((open) => !open)}
             aria-label={mobileOpen ? "Close player" : "Open player"}
+            aria-expanded={mobileOpen}
             className="flex items-center gap-2 text-left"
           >
             <div className="flex items-end gap-[2px] h-3 shrink-0">

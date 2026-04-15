@@ -11,11 +11,16 @@ const ThemeContext = createContext<{
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "dark";
-  return (localStorage.getItem("theme") as Theme | null) ?? "dark";
+  // Read from DOM class set by the inline script in layout.tsx (prevents flash)
+  if (document.documentElement.classList.contains("dark")) return "dark";
+  return "light";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "dark";
+    return getInitialTheme();
+  });
 
   useEffect(() => {
     const initial = getInitialTheme();

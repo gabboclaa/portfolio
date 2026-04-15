@@ -1,6 +1,7 @@
 import { getPostContent, getAllPosts } from "@/lib/writing";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -12,7 +13,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { meta } = getPostContent(slug);
+  let meta;
+  try {
+    ({ meta } = getPostContent(slug));
+  } catch {
+    return {};
+  }
   const url = `https://gabboclaa.com/writing/${slug}`;
   return {
     title: meta.title,
@@ -43,25 +49,35 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { meta, content } = getPostContent(slug);
+
+  let meta, content;
+  try {
+    ({ meta, content } = getPostContent(slug));
+  } catch {
+    notFound();
+  }
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: meta.title,
-    description: meta.description,
+    headline: meta!.title,
+    description: meta!.description,
     author: {
       "@type": "Person",
       name: "Gabriele Clara Di Gioacchino",
       url: "https://gabboclaa.com",
     },
-    datePublished: meta.date,
+    datePublished: meta!.date,
     url: `https://gabboclaa.com/writing/${slug}`,
   };
+
   return (
     <main className="max-w-2xl mx-auto px-6 py-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
+        }}
       />
       <div className="mb-12">
         <Link
@@ -71,13 +87,13 @@ export default async function PostPage({
           ← Writing
         </Link>
       </div>
-      <p className="font-mono text-xs text-[#6b6b6b] mb-2">{meta.date}</p>
+      <p className="font-mono text-xs text-[#6b6b6b] mb-2">{meta!.date}</p>
       <h1 className="text-2xl font-sans font-semibold text-[#0f0f0f] dark:text-[#f0f0f0] mb-8">
-        {meta.title}
+        {meta!.title}
       </h1>
-      {meta.tags.length > 0 && (
+      {(meta!.tags?.length ?? 0) > 0 && (
         <div className="flex gap-2 mb-8">
-          {meta.tags.map((tag) => (
+          {meta!.tags.map((tag) => (
             <span
               key={tag}
               className="font-mono text-xs text-[#6b6b6b] border border-[#e5e5e5] dark:border-[#2a2a2a] px-2 py-0.5 rounded-full"
@@ -88,7 +104,7 @@ export default async function PostPage({
         </div>
       )}
       <article className="prose prose-sm dark:prose-invert max-w-none">
-        <MDXRemote source={content} />
+        <MDXRemote source={content!} />
       </article>
     </main>
   );

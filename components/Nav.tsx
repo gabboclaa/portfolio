@@ -12,17 +12,6 @@ export default function Nav({ onOpenCV }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggle } = useTheme();
 
-  const preloadPDFViewer = () => import("./PDFViewerClient");
-
-  const prefetchPDF = () => {
-    fetch("/cv.pdf", { cache: "force-cache" }).catch(() => {});
-  };
-
-  const warmUpCV = () => {
-    preloadPDFViewer();
-    prefetchPDF();
-  };
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
@@ -41,12 +30,13 @@ export default function Nav({ onOpenCV }: NavProps) {
         <div className="flex items-center gap-4 sm:gap-6">
           <a
             href="#"
+            aria-label="Home"
             className="font-mono text-base font-medium tracking-[-0.03em] text-[#0f0f0f] dark:text-[#f0f0f0] transition-colors"
           >
-            <span className="font-light text-[#bd864b]">&lt;</span>
+            <span className="font-light text-[#bd864b]" aria-hidden="true">&lt;</span>
             GCDG
-            <span className="text-[#bd864b]">.dev</span>
-            <span className="font-light text-[#bd864b]">&gt;</span>
+            <span className="text-[#bd864b]" aria-hidden="true">.dev</span>
+            <span className="font-light text-[#bd864b]" aria-hidden="true">&gt;</span>
           </a>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -59,9 +49,6 @@ export default function Nav({ onOpenCV }: NavProps) {
 
           {/* Resume button */}
           <button
-            onMouseEnter={warmUpCV}
-            onFocus={warmUpCV}
-            onTouchStart={warmUpCV}
             onClick={onOpenCV}
             className="hidden sm:inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-[#0f0f0f] dark:text-[#f0f0f0] border border-[#e5e5e5] dark:border-[#2a2a2a] px-3.5 py-1.5 rounded-full hover:border-[#bd864b] hover:text-[#bd864b] transition-colors"
           >
@@ -85,6 +72,7 @@ export default function Nav({ onOpenCV }: NavProps) {
           <button
             onClick={toggle}
             aria-label="Toggle theme"
+            aria-pressed={theme === "dark"}
             className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border border-[#e5e5e5] dark:border-[#2a2a2a] text-[#6b6b6b] dark:text-[#555] hover:border-[#0f0f0f] dark:hover:border-[#f0f0f0] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors"
           >
             {theme === "light" ? (

@@ -1,6 +1,22 @@
 import type { Metadata } from "next";
+import { DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
+});
+
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+  weight: ["400", "500"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gabboclaa.com"),
@@ -73,22 +89,32 @@ const websiteSchema = {
   url: "https://gabboclaa.com",
 };
 
+/** Prevent </script> injection in JSON-LD strings */
+function safeJsonLd(obj: object): string {
+  return JSON.stringify(obj).replace(/</g, "\\u003c");
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${dmMono.variable}`}
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}}catch(e){}})()`,
           }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(personSchema) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }}
         />
       </head>
       <body>

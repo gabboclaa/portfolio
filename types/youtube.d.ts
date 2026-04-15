@@ -33,4 +33,5 @@ interface YTPlayer {
   isMuted: () => boolean;
   loadVideoById: (options: string | { videoId: string; startSeconds?: number }) => void;
   getPlayerState: () => number;
+  destroy: () => void;
 }
