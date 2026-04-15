@@ -159,28 +159,12 @@ function DotGrid() {
     const ctx = canvas.getContext("2d")!;
     const SPACING = 36;
     let raf: number;
-    let paused = false;
-
-    const resize = () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const onMove = (e: MouseEvent) => { mouse.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener("mousemove", onMove);
-
-    const onVisibility = () => {
-      paused = document.hidden;
-      if (!paused) raf = requestAnimationFrame(draw);
-    };
-    document.addEventListener("visibilitychange", onVisibility);
 
     const draw = () => {
-      if (paused) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const isDark = document.documentElement.classList.contains("dark");
+      const mx = mouse.current.x;
+      const my = mouse.current.y;
       const cols = Math.ceil(canvas.width  / SPACING) + 1;
       const rows = Math.ceil(canvas.height / SPACING) + 1;
 
@@ -188,8 +172,8 @@ function DotGrid() {
         for (let c = 0; c < cols; c++) {
           const x = c * SPACING;
           const y = r * SPACING;
-          const dx = x - mouse.current.x;
-          const dy = y - mouse.current.y;
+          const dx = x - mx;
+          const dy = y - my;
           const dist = Math.sqrt(dx * dx + dy * dy);
           const proximity = Math.max(0, 1 - dist / 240);
           const size  = 1 + proximity * 2.5;
@@ -205,13 +189,44 @@ function DotGrid() {
           ctx.fill();
         }
       }
+    };
+
+    // Only redraw when the mouse actually moves — no continuous RAF loop
+    const scheduleDraw = () => {
+      cancelAnimationFrame(raf);
       raf = requestAnimationFrame(draw);
     };
-    draw();
+
+    const resize = () => {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      scheduleDraw();
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const onMove = (e: MouseEvent) => {
+      mouse.current = { x: e.clientX, y: e.clientY };
+      scheduleDraw();
+    };
+    window.addEventListener("mousemove", onMove);
+
+    // Reset glow when mouse leaves the window
+    const onLeave = () => {
+      mouse.current = { x: -999, y: -999 };
+      scheduleDraw();
+    };
+    document.addEventListener("mouseleave", onLeave);
+
+    const onVisibility = () => {
+      if (!document.hidden) scheduleDraw();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
       cancelAnimationFrame(raf);
     };
@@ -228,19 +243,21 @@ function DotGrid() {
 }
 
 // ── Cursor glow ──
+// Uses transform instead of left/top so positioning is GPU-composited
+// and never triggers layout recalculation.
 function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null);
   const dotRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
+      // Glow is 320×320 — subtract half to center on cursor
       if (glowRef.current) {
-        glowRef.current.style.left = e.clientX + "px";
-        glowRef.current.style.top  = e.clientY + "px";
+        glowRef.current.style.transform = `translate(${e.clientX - 160}px, ${e.clientY - 160}px)`;
       }
+      // Dot is 5×5 — subtract half to center on cursor
       if (dotRef.current) {
-        dotRef.current.style.left = e.clientX + "px";
-        dotRef.current.style.top  = e.clientY + "px";
+        dotRef.current.style.transform = `translate(${e.clientX - 2}px, ${e.clientY - 2}px)`;
       }
     };
     window.addEventListener("mousemove", onMove);
@@ -251,18 +268,18 @@ function CursorGlow() {
     <>
       <div
         ref={glowRef}
-        className="fixed z-0 pointer-events-none rounded-full"
+        className="fixed top-0 left-0 z-0 pointer-events-none rounded-full"
         style={{
           width: 320, height: 320,
           background: "radial-gradient(circle, rgba(189,134,75,0.09) 0%, transparent 70%)",
-          transform: "translate(-50%, -50%)",
-          transition: "left 0.08s ease, top 0.08s ease",
+          transition: "transform 0.08s ease",
+          willChange: "transform",
         }}
       />
       <div
         ref={dotRef}
-        className="fixed z-50 pointer-events-none rounded-full bg-[#bd864b]"
-        style={{ width: 5, height: 5, transform: "translate(-50%, -50%)", transition: "left 0.03s, top 0.03s" }}
+        className="fixed top-0 left-0 z-50 pointer-events-none rounded-full bg-[#bd864b]"
+        style={{ width: 5, height: 5, transition: "transform 0.03s linear", willChange: "transform" }}
       />
     </>
   );
