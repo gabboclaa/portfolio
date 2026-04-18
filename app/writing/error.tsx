@@ -22,7 +22,7 @@ export default function WritingError({
         </button>
         <Link
           href="/writing"
-          className="font-mono text-xs text-[#6b6b6b] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors"
+          className="font-mono text-xs text-[#6b6b6b] dark:text-[#9a9a9a] hover:text-[#0f0f0f] dark:hover:text-[#f0f0f0] transition-colors"
         >
           ← Back to writing
         </Link>

@@ -13,10 +13,15 @@ html { scroll-behavior: smooth; }
 }
 
 body {
-  background: #f3e7db;
-  color: #0f0f0f;
+  background: #0f0f0f;
+  color: #f0f0f0;
   font-family: var(--font-geist-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+.light body {
+  background: #f3e7db;
+  color: #0f0f0f;
 }
 
 .dark body {

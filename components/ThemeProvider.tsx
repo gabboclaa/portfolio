@@ -11,15 +11,34 @@ const ThemeContext = createContext<{
 
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "dark";
-  // Read from DOM class set by the inline script in layout.tsx (prevents flash)
+  // Prefer the DOM class set by the inline script in layout.tsx (fastest path)
   if (document.documentElement.classList.contains("dark")) return "dark";
-  return "light";
+  if (document.documentElement.classList.contains("light")) return "light";
+  // Fallback: read localStorage directly for pages where the inline script didn't run
+  // (e.g. Next.js not-found / error routes served via RSC streaming)
+  try {
+    const stored = localStorage.getItem("theme");
+    if (stored === "light") return "light";
+  } catch {
+    // ignore — private browsing may block localStorage
+  }
+  return "dark"; // default
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === "undefined") return "dark";
-    return getInitialTheme();
+    const t = getInitialTheme();
+    // Apply the class immediately so the correct theme is in place before first paint,
+    // even on routes where the layout's inline theme script didn't execute.
+    if (t === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    }
+    return t;
   });
 
   useEffect(() => {
@@ -27,8 +46,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(initial);
     if (initial === "dark") {
       document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
     } else {
       document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
     }
   }, []);
 
@@ -39,8 +60,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const next: Theme = prev === "light" ? "dark" : "light";
       if (next === "dark") {
         document.documentElement.classList.add("dark");
+        document.documentElement.classList.remove("light");
       } else {
         document.documentElement.classList.remove("dark");
+        document.documentElement.classList.add("light");
       }
       localStorage.setItem("theme", next);
       return next;
