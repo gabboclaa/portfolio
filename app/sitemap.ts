@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/writing";
 
 const BASE_URL = "https://gabboclaa.com";
+const SITE_LAST_MODIFIED = new Date("2026-04-21");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
@@ -9,13 +10,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
       url: `${BASE_URL}/writing`,
-      lastModified: new Date(),
+      lastModified: SITE_LAST_MODIFIED,
       changeFrequency: "weekly",
       priority: 0.8,
     },

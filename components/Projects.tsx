@@ -56,7 +56,6 @@ const projects: Project[] = [
     ],
     links: [
       { label: "GitHub", href: "https://github.com/gabboclaa/Martian-Terrain-Semantic-Segmentation" },
-      { label: "README demo", href: "https://github.com/gabboclaa/Martian-Terrain-Semantic-Segmentation#readme" },
     ],
     image: "/projects/martianTerrainSegmentation.jpg",
     latest: true,
@@ -82,7 +81,6 @@ const projects: Project[] = [
     ],
     links: [
       { label: "GitHub", href: "https://github.com/gabboclaa/Blood-Cells-Classifier" },
-      { label: "README demo", href: "https://github.com/gabboclaa/Blood-Cells-Classifier#readme" },
     ],
     image: "/projects/bloodCellsClassification.jpg",
   },
@@ -108,7 +106,6 @@ const projects: Project[] = [
     ],
     links: [
       { label: "GitHub", href: "https://github.com/gabboclaa/MyShelfieBoardGame" },
-      { label: "README demo", href: "https://github.com/gabboclaa/MyShelfieBoardGame#readme" },
     ],
     image: "/projects/myshelfie.jpg",
   },
@@ -133,7 +130,6 @@ const projects: Project[] = [
     ],
     links: [
       { label: "GitHub", href: "https://github.com/gabboclaa/Shortest-Path-Finder" },
-      { label: "README demo", href: "https://github.com/gabboclaa/Shortest-Path-Finder#readme" },
     ],
     image: "/projects/shortestPathFinder.jpg",
   },
@@ -158,7 +154,6 @@ const projects: Project[] = [
     ],
     links: [
       { label: "GitHub", href: "https://github.com/gabboclaa/WordChecker" },
-      { label: "README demo", href: "https://github.com/gabboclaa/WordChecker#readme" },
     ],
     image: "/projects/wordchecker.png",
   },
@@ -345,7 +340,7 @@ function ProjectThumbnail({
 }
 
 export default function Projects() {
-  const [openIndex, setOpenIndex] = useState<number>(projects.findIndex((project) => project.latest));
+  const [openIndex, setOpenIndex] = useState<number>(-1);
 
   return (
     <section
